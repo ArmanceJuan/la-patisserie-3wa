@@ -14,5 +14,5 @@ export const diceSlice = createSlice({
   },
 });
 
-export const { rollDice, resetDice } = diceSlice.actions;
+export const { rollDice } = diceSlice.actions;
 export default diceSlice.reducer;
