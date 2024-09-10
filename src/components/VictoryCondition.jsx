@@ -1,21 +1,17 @@
-export const countDuplicates = (diceValues) => {
+export const checkVictoryCondition = (diceValues) => {
   const counts = {};
   diceValues.forEach((value) => {
     counts[value] = (counts[value] || 0) + 1;
   });
-  return counts;
-};
 
-export const getSameDice = (duplicateCounts) => {
-  return Math.max(...Object.values(duplicateCounts));
-};
+  const countValues = Object.values(counts);
+  const maxCount = Math.max(...countValues);
+  const pairCount = countValues.filter((count) => count >= 2).length;
 
-export const checkVictoryCondition = (diceValues) => {
-  const duplicateCounts = countDuplicates(diceValues);
-  const sameDiceCounts = getSameDice(duplicateCounts);
-
-  if (sameDiceCounts >= 4) return 3;
-  if (sameDiceCounts === 3) return 2;
-  if (sameDiceCounts === 2) return 1;
+  if (maxCount >= 4) return 3;
+  if (maxCount === 3 && pairCount === 2) return 3;
+  if (maxCount === 3) return 2;
+  if (pairCount >= 2) return 2;
+  if (maxCount === 2) return 1;
   return 0;
 };

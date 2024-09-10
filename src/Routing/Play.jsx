@@ -15,21 +15,22 @@ const Play = () => {
   const handleRoll = () => {
     dispatch(rollDice());
     dispatch(decrement());
-    const pastriesWon = checkVictoryCondition(dice);
-    dispatch(addPastries(pastriesWon));
-    setCurrentRollResult(pastriesWon);
   };
 
   useEffect(() => {
-    if (remainingAttempts === 0) {
-      // Le jeu est terminé, vous pouvez ajouter une logique supplémentaire ici si nécessaire
+    if (remainingAttempts < 3) {
+      const pastriesWon = checkVictoryCondition(dice);
+      if (pastriesWon > 0) {
+        dispatch(addPastries(pastriesWon));
+      }
+      setCurrentRollResult(pastriesWon);
     }
-  }, [remainingAttempts]);
+  }, [dice, remainingAttempts, dispatch]);
 
   return (
-    <div className="play-container">
+    <div>
       <h1>Jouer</h1>
-      <div className="dice-container">
+      <div>
         {dice.map((value, index) => (
           <span key={index} className="dice">
             {value}
