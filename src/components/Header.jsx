@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import "./header.css";
+import "./header.scss";
 
 const Header = () => {
   return (
@@ -33,14 +33,14 @@ const Header = () => {
               Contact
             </NavLink>
           </li>
-          {/* <li>
+          <li>
             <NavLink
               to="/admin"
               className={({ isActive }) => (isActive ? "active-link" : "")}
             >
               Admin
             </NavLink>
-          </li> */}
+          </li>
           <li>
             <NavLink
               to="/login"

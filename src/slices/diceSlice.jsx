@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  dice: Array(5).fill(1),
+  dice: Array(5).fill("?"),
 };
 
 export const diceSlice = createSlice({

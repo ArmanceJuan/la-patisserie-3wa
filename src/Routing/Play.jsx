@@ -46,7 +46,7 @@ const Play = () => {
         </p>
         <p>Accumulez les délices pour remportez la partie !</p>
       </div>
-      <div>
+      <div className="dice-container">
         {dice.map((value, index) => (
           <span key={index} className="dice">
             {value}
