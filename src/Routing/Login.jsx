@@ -1,33 +1,49 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loginSuccess, loginFailure } from "../slices/authSlice";
+import axios from "axios";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
-  const error = useSelector((state) => state.auth?.error);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError("");
 
-    if (username === "admin" && password === "admin") {
-      dispatch(loginSuccess({ username }));
-    } else {
-      dispatch(loginFailure("Nom d'utilisateur ou mot de passe incorrect"));
+    try {
+      const response = await axios.post("http://localhost:3001/login", {
+        email,
+        password,
+      });
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+      setError("Échec de la connexion. Veuillez vérifier vos identifiants.");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div>
+        <h1>Connexion en cours...</h1>
+      </div>
+    );
+  }
 
   return (
     <div>
       <h1>Login</h1>
       <form onSubmit={handleLogin}>
         <div>
-          <label>Nom d'utilisateur:</label>
+          <label>Email:</label>
           <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
