@@ -25,14 +25,14 @@ const Header = () => {
               Jouer
             </NavLink>
           </li>
-          {/* <li>
+          <li>
             <NavLink
               to="/contact"
               className={({ isActive }) => (isActive ? "active-link" : "")}
             >
               Contact
             </NavLink>
-          </li> */}
+          </li>
           {/* <li>
             <NavLink
               to="/admin"
