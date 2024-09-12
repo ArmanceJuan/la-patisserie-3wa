@@ -1,99 +1,139 @@
-import axios from "axios";
-import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./Admin.scss";
+import React, { useState } from "react";
+import {
+  useGetPastriesQuery,
+  useAddPastryMutation,
+  useUpdatePastryMutation,
+  useDeletePastryMutation,
+} from "../slices/apiSlice";
 
 const Admin = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState([]);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const { data: pastries, isLoading } = useGetPastriesQuery();
+  const [addPastry] = useAddPastryMutation();
+  const [updatePastry] = useUpdatePastryMutation();
+  const [deletePastry] = useDeletePastryMutation();
 
-  const isAuthenticated = () => {
-    if (!Cookies.get("token")) {
-      navigate("/");
-      return;
-    }
-  };
+  const [newPastry, setNewPastry] = useState({
+    name: "",
+    description: "",
+    quantity: 0,
+  });
+  const [editingPastry, setEditingPastry] = useState(null);
 
-  useEffect(() => isAuthenticated(), []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const response = await axios.get("http://localhost:3001/api/pastries");
-        setData(response.data);
-        setIsLoading(false);
-        console.log(response.data);
-      } catch (error) {
-        console.error(error);
-        setError("Erreur lors de la récupération des données");
-        setIsLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const handleDelete = async (id) => {
+  const handleAddPastry = async (e) => {
+    e.preventDefault();
     try {
-      const response = await axios.delete(
-        `http://localhost:3001/game/api/pastrie/${id}`
-      );
-      if (response.status === 200) {
-        setData(data.filter((data) => data.id !== id));
-      } else {
-        setError("Échec de la suppression");
-      }
-    } catch (error) {
-      console.error(error);
-      setError("Échec de la suppression");
+      await addPastry(newPastry).unwrap();
+      setNewPastry({ name: "", description: "", quantity: 0 });
+    } catch (err) {
+      console.error("Failed to add the pastry:", err);
     }
   };
+
+  const handleUpdatePastry = async (e) => {
+    e.preventDefault();
+    try {
+      await updatePastry(editingPastry).unwrap();
+      setEditingPastry(null);
+    } catch (err) {
+      console.error("Failed to update the pastry:", err);
+    }
+  };
+
+  const handleDeletePastry = async (id) => {
+    try {
+      await deletePastry(id).unwrap();
+    } catch (err) {
+      console.error("Failed to delete the pastry:", err);
+    }
+  };
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="admin-page">
-      <h1>Administration</h1>
-      <h2>Liste des pâtisseries</h2>
-      <button className="add-btn">Ajouter une pâtisserie</button>
+    <div>
+      <h2>Admin Panel</h2>
+      <h3>Add New Pastry</h3>
+      <form onSubmit={handleAddPastry}>
+        <input
+          type="text"
+          value={newPastry.name}
+          onChange={(e) => setNewPastry({ ...newPastry, name: e.target.value })}
+          placeholder="Name"
+          required
+        />
+        <input
+          type="text"
+          value={newPastry.description}
+          onChange={(e) =>
+            setNewPastry({ ...newPastry, description: e.target.value })
+          }
+          placeholder="Description"
+          required
+        />
+        <input
+          type="number"
+          value={newPastry.quantity}
+          onChange={(e) =>
+            setNewPastry({ ...newPastry, quantity: parseInt(e.target.value) })
+          }
+          placeholder="Quantity"
+          required
+        />
+        <button type="submit">Add Pastry</button>
+      </form>
 
-      {isLoading ? (
-        <p>Chargement des données...</p>
-      ) : error ? (
-        <p className="error">{error}</p>
-      ) : (
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Image</th>
-              <th>Nom</th>
-              <th>Quantités restantes</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((data) => (
-              <tr key={data.id}>
-                <td>
-                  <img src={data.image} alt={data.name} />
-                </td>
-                <td>{data.name}</td>
-                <td>{data.quantity}</td>
-                <td>
-                  <button
-                    className="action-btn"
-                    onClick={() => handleDelete(data.id)}
-                  >
-                    Supprimer
-                  </button>
-                  <button className="action-btn">Modifier</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      <h3>Pastries List</h3>
+      {pastries &&
+        pastries.map((pastry) => (
+          <div key={pastry.id}>
+            {editingPastry && editingPastry.id === pastry.id ? (
+              <form onSubmit={handleUpdatePastry}>
+                <input
+                  type="text"
+                  value={editingPastry.name}
+                  onChange={(e) =>
+                    setEditingPastry({ ...editingPastry, name: e.target.value })
+                  }
+                  required
+                />
+                <input
+                  type="text"
+                  value={editingPastry.description}
+                  onChange={(e) =>
+                    setEditingPastry({
+                      ...editingPastry,
+                      description: e.target.value,
+                    })
+                  }
+                  required
+                />
+                <input
+                  type="number"
+                  value={editingPastry.quantity}
+                  onChange={(e) =>
+                    setEditingPastry({
+                      ...editingPastry,
+                      quantity: parseInt(e.target.value),
+                    })
+                  }
+                  required
+                />
+                <button type="submit">Save</button>
+                <button onClick={() => setEditingPastry(null)}>Cancel</button>
+              </form>
+            ) : (
+              <>
+                <h4>{pastry.name}</h4>
+                <p>{pastry.description}</p>
+                <p>Quantity: {pastry.quantity}</p>
+                <button onClick={() => setEditingPastry(pastry)}>Edit</button>
+                <button onClick={() => handleDeletePastry(pastry.id)}>
+                  Delete
+                </button>
+              </>
+            )}
+          </div>
+        ))}
     </div>
   );
 };
