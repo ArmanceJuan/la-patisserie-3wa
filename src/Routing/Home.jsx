@@ -27,9 +27,9 @@ const Home = () => {
   return (
     <div className="container">
       <h1>Jouez à notre jeu de yams pour tenter de remporter des lots !</h1>
-      <button>
-        <Link to="/play">Jouer</Link>
-      </button>
+      <Link to="/play">
+        <button className="play-btn">Jouer</button>
+      </Link>
       <h1>Lots restants :</h1>
       <div className="pastry-container">
         {data.map((item) => (

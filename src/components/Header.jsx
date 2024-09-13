@@ -40,13 +40,11 @@ const Header = () => {
           </li>
           {user && (
             <>
-              {user &&
-                user.role &&
-                user.role.includes("admin")(
-                  <li>
-                    <NavLink to="/admin">Admin</NavLink>
-                  </li>
-                )}
+              {user.role && (
+                <li>
+                  <NavLink to="/admin">Admin</NavLink>
+                </li>
+              )}
               <li>
                 <button onClick={handleLogout} disabled={isLoggingOut}>
                   {isLoggingOut ? "Déconnexion..." : "Logout"}

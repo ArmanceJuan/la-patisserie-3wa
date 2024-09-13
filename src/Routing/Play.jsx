@@ -1,11 +1,14 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import { rollDice } from "../slices/diceSlice";
 import { decrement, addPastries } from "../slices/gameSlice";
+import { useCheckAuthQuery } from "../slices/apiSlice";
 import { checkVictoryCondition } from "../components/VictoryCondition";
 import "./Play.scss";
 
 const Play = () => {
+  const { data: user, isLoading } = useCheckAuthQuery();
   const dispatch = useDispatch();
   const { dice } = useSelector((state) => state.dice);
   const { value: remainingAttempts, totalPastries } = useSelector(
@@ -27,6 +30,17 @@ const Play = () => {
       setCurrentRollResult(pastriesWon);
     }
   }, [dice, remainingAttempts, dispatch]);
+
+  if (!user || !user.role) {
+    return (
+      <>
+        <h1>Connectez-vous pour jouer !</h1>
+        <button>
+          <Link to="/login">Connexion</Link>
+        </button>
+      </>
+    );
+  }
 
   return (
     <div className="play-page">

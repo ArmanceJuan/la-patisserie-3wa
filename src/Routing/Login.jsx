@@ -45,7 +45,12 @@ const Login = () => {
           {isLoading ? "Connexion en cours..." : "Se connecter"}
         </button>
       </form>
-      {error && <p className="error">{error.data.message}</p>}
+      {error && (
+        <p className="error">
+          {error.data?.message ||
+            "Une erreur est survenue lors de la connexion"}
+        </p>
+      )}
     </div>
   );
 };

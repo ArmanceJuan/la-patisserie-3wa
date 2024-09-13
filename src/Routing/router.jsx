@@ -5,7 +5,6 @@ import Login from "./Login";
 import Contact from "../Routing/Contact";
 import Play from "./Play";
 import Admin from "../Routing/Admin";
-import ProtectedRoute from "./ProtectedRoute"; // Importe le composant ProtectedRoute
 
 const router = createBrowserRouter([
   {
@@ -30,7 +29,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <ProtectedRoute element={<Admin />} />, // Protéger la route admin
+        element: <Admin />,
       },
     ],
   },
