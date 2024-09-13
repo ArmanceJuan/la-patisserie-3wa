@@ -32,17 +32,23 @@ const Header = () => {
               Home
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/play">Jouer</NavLink>
-          </li>
+          {/* {user && (
+            <li>
+              <NavLink to="/play">Jouer</NavLink>
+            </li>
+          )} */}
           <li>
             <NavLink to="/contact">Contact</NavLink>
           </li>
-          {user && (
+          {user ? (
             <>
-              {user.role && (
+              {user.role ? (
                 <li>
                   <NavLink to="/admin">Admin</NavLink>
+                </li>
+              ) : (
+                <li>
+                  <NavLink to="/play">Jouer</NavLink>
                 </li>
               )}
               <li>
@@ -51,8 +57,7 @@ const Header = () => {
                 </button>
               </li>
             </>
-          )}
-          {!user && (
+          ) : (
             <li>
               <NavLink to="/login">Login</NavLink>
             </li>

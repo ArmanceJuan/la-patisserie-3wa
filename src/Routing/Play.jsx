@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { rollDice } from "../slices/diceSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { rollDice, stopDice } from "../slices/diceSlice";
 import { decrement, addPastries } from "../slices/gameSlice";
 import { useCheckAuthQuery } from "../slices/apiSlice";
 import { checkVictoryCondition } from "../components/VictoryCondition";
@@ -14,16 +14,20 @@ const Play = () => {
   const { value: remainingAttempts, totalPastries } = useSelector(
     (state) => state.game
   );
-  const [currentRollResult, setCurrentRollResult] = React.useState(null);
+  const [currentRollResult, setCurrentRollResult] = useState(null);
 
   const handleRoll = () => {
     dispatch(rollDice());
     dispatch(decrement());
   };
 
+  const handleStopDice = (index) => {
+    dispatch(stopDice(index));
+  };
+
   useEffect(() => {
     if (remainingAttempts < 3) {
-      const pastriesWon = checkVictoryCondition(dice);
+      const pastriesWon = checkVictoryCondition(dice.map((die) => die.value));
       if (pastriesWon > 0) {
         dispatch(addPastries(pastriesWon));
       }
@@ -31,7 +35,7 @@ const Play = () => {
     }
   }, [dice, remainingAttempts, dispatch]);
 
-  if (!user || !user.role) {
+  if (!user) {
     return (
       <>
         <h1>Connectez-vous pour jouer !</h1>
@@ -44,26 +48,27 @@ const Play = () => {
 
   return (
     <div className="play-page">
-      <h1>Jeu du yams</h1>
+      <h1>Jeu du Yams</h1>
       <div className="rules">
         <p>Vous avez 3 lancés.</p>
         <p>
-          Si vous obtenez une paire (deux dés identoques), vous gagnez 1
+          Si vous obtenez une paire (deux dés identiques), vous gagnez 1
           pâtisserie.
         </p>
         <p>
           Avec un brelan (trois dés identiques), vous remportez 3 pâtisseries.
         </p>
-        <p>
-          Et en cas de carré (quatredés identiques), vous remportez 3
-          pâtisseries.
-        </p>
-        <p>Accumulez les délices pour remportez la partie !</p>
+        <p>Un carré (quatre dés identiques) vous donne 4 pâtisseries.</p>
+        <p>Accumulez les délices pour remporter la partie !</p>
       </div>
       <div className="dice-container">
-        {dice.map((value, index) => (
-          <span key={index} className="dice">
-            {value}
+        {dice.map((die, index) => (
+          <span
+            key={index}
+            className={`dice ${die.locked ? "locked" : ""}`}
+            onClick={() => handleStopDice(index)}
+          >
+            {die.value}
           </span>
         ))}
       </div>

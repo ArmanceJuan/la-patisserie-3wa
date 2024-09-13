@@ -26,14 +26,21 @@ a {
 
   .rules {
     text-align: left;
-    line-height: 1.2;
+    line-height: 1.5;
     margin-bottom: 1rem;
     width: 100%;
     color: #555;
 
     p {
-      margin: 0.2rem 0;
+      margin: 0.5rem 0;
     }
+  }
+
+  .dice-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 1rem 0;
   }
 
   .dice {
@@ -50,6 +57,19 @@ a {
     border-radius: 10px;
     background-color: #fff;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: border-color 0.3s ease, transform 0.2s ease;
+
+    &.locked {
+      border-color: #28a745; // Bordure pour les dés verrouillés
+      background-color: #e9f7ef; // Arrière-plan pour les dés verrouillés
+      transform: scale(1.05); // Agrandissement léger pour les dés verrouillés
+    }
+
+    &:hover {
+      border-color: #ff4d4d; // Bordure en survol
+      transform: scale(1.1); // Agrandissement au survol
+    }
   }
 
   p {
