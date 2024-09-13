@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { rollDice, stopDice } from "../slices/diceSlice";
 import { decrement, addPastries } from "../slices/gameSlice";
@@ -15,6 +14,7 @@ const Play = () => {
     (state) => state.game
   );
   const [currentRollResult, setCurrentRollResult] = useState(null);
+  const [gameFinished, setGameFinished] = useState(false);
 
   const handleRoll = () => {
     dispatch(rollDice());
@@ -25,22 +25,27 @@ const Play = () => {
     dispatch(stopDice(index));
   };
 
-  useEffect(() => {
-    if (remainingAttempts < 3) {
-      const pastriesWon = checkVictoryCondition(dice.map((die) => die.value));
-      if (pastriesWon > 0) {
-        dispatch(addPastries(pastriesWon));
-      }
-      setCurrentRollResult(pastriesWon);
+  const handleEndGame = () => {
+    const pastriesWon = checkVictoryCondition(dice.map((die) => die.value));
+    if (pastriesWon > 0) {
+      dispatch(addPastries(pastriesWon));
     }
-  }, [dice, remainingAttempts, dispatch]);
+    setCurrentRollResult(pastriesWon);
+    setGameFinished(true);
+  };
+
+  useEffect(() => {
+    if (remainingAttempts === 0 && !gameFinished) {
+      handleEndGame();
+    }
+  }, [remainingAttempts, dispatch, dice, gameFinished]);
 
   if (!user) {
     return (
       <>
         <h1>Connectez-vous pour jouer !</h1>
         <button>
-          <Link to="/login">Connexion</Link>
+          <a href="/login">Connexion</a>
         </button>
       </>
     );
@@ -74,8 +79,11 @@ const Play = () => {
       </div>
       <p>Essais restants : {remainingAttempts}</p>
       <p>Total de pâtisseries gagnées : {totalPastries}</p>
-      {remainingAttempts > 0 ? (
-        <button onClick={handleRoll}>Lancer les dés</button>
+      {remainingAttempts > 0 && !gameFinished ? (
+        <>
+          <button onClick={handleRoll}>Lancer les dés</button>
+          <button onClick={handleEndGame}>Valider et terminer</button>
+        </>
       ) : (
         <p className="game-over-message">Le jeu est terminé !</p>
       )}

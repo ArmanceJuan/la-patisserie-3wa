@@ -6,14 +6,14 @@ import "./login.scss";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [login, { isLoading, error }] = useLoginMutation();
-  const navigate = useNavigate();
+  const [login, { isLoading, error }] = useLoginMutation(); // (RTK) => envoi  des info de co à l'API
+  const navigate = useNavigate(); // Si connexion réussie => page accueil
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await login({ email, password }).unwrap();
-      navigate("/");
+      await login({ email, password }).unwrap(); // Envoie les informations à l'API pour la connexion
+      navigate("/"); // Redirige l'utilisateur vers la page d'accueil si la connexion réussit
     } catch (err) {
       console.error("Failed to login:", err);
     }

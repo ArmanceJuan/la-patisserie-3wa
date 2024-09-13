@@ -32,11 +32,6 @@ const Header = () => {
               Home
             </NavLink>
           </li>
-          {/* {user && (
-            <li>
-              <NavLink to="/play">Jouer</NavLink>
-            </li>
-          )} */}
           <li>
             <NavLink to="/contact">Contact</NavLink>
           </li>
@@ -52,7 +47,11 @@ const Header = () => {
                 </li>
               )}
               <li>
-                <button onClick={handleLogout} disabled={isLoggingOut}>
+                <button
+                  onClick={handleLogout}
+                  disabled={isLoggingOut}
+                  className="logout-btn"
+                >
                   {isLoggingOut ? "Déconnexion..." : "Logout"}
                 </button>
               </li>

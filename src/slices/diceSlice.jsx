@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  dice: Array(5).fill({ value: "?", locked: false }), // Initialiser avec des objets pour stocker la valeur et l'état de verrouillage
+  dice: Array(5).fill({ value: "?", locked: false }),
 };
 
 export const diceSlice = createSlice({
@@ -17,7 +17,7 @@ export const diceSlice = createSlice({
     },
     stopDice: (state, action) => {
       const index = action.payload;
-      state.dice[index].locked = !state.dice[index].locked; // Toggle lock state
+      state.dice[index].locked = !state.dice[index].locked;
     },
   },
 });

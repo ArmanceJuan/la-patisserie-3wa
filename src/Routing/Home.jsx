@@ -1,14 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Cookies from "js-cookie";
+import { useCheckAuthQuery } from "../slices/apiSlice";
 import "./home.scss";
 
 const Home = () => {
   const [data, setData] = useState([]);
   const [error, setError] = useState("");
-
-  console.log("Cookies :", Cookies.get("token"));
+  const { data: user } = useCheckAuthQuery();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,9 +26,12 @@ const Home = () => {
   return (
     <div className="container">
       <h1>Jouez à notre jeu de yams pour tenter de remporter des lots !</h1>
-      <Link to="/play">
-        <button className="play-btn">Jouer</button>
-      </Link>
+      {!user.role && (
+        <Link to="/play">
+          <button className="play-btn">Jouer</button>
+        </Link>
+      )}
+
       <h1>Lots restants :</h1>
       <div className="pastry-container">
         {data.map((item) => (
